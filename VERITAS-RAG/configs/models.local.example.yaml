@@ -1,0 +1,6 @@
+# Copy to configs/models.local.yaml (git-ignored) and edit.
+# Example shape only; replace with the provider/model you actually use.
+models:
+  generator_default:
+    model_id: "<your-model-id>"
+    base_url: "https://<your-openai-compatible-endpoint>/v1"

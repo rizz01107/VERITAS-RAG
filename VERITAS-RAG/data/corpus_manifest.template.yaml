@@ -1,0 +1,23 @@
+# Template for ONE paper entry. All values are placeholders, not real papers.
+# Copy into `papers:` of corpus_manifest.yaml and fill from the actual source page.
+- paper_id: "<source>-<id>v<version>"
+  title: "<exact title>"
+  authors: ["<author 1>", "<author 2>"]
+  year: 2000
+  source: arxiv                    # arxiv | acl_anthology | openreview | publisher | other
+  source_id: "<e.g. arXiv id>"
+  version: "v1"
+  source_url: "https://<where you downloaded it>"
+  license: UNVERIFIED              # replace with the licence actually stated by the source
+  license_url: null
+  license_verified_on: null        # date you checked, YYYY-MM-DD
+  access_checked_on: null
+  license_notes: ""
+  local_path: "<file name under data/raw>"
+  sha256: null                     # python -m app.cli can verify after download
+  status: candidate                # candidate | verified | included | excluded
+  exclusion_reason: null
+  duplicate_of: null               # if set, status must be excluded
+  cluster_id: null                 # papers that must never be split across dev/test
+  split: null                      # train | dev | test (required when included)
+  topic_tags: []

@@ -1,0 +1,216 @@
+# Candidate manifest for the PEFT literature corpus.
+#
+# STATUS: CANDIDATES ONLY. Nothing is `included`. No licence has been human-verified,
+# no file has been downloaded or hashed, and no split has been assigned.
+#
+# What was observed (by the assistant, during the Phase 3 sessions in early October 2026,
+# exact dates not recorded, via web search results and one fetched PDF) vs not:
+#   observed : title, authors, arXiv id, arXiv-issued DOI, venue (from the named page),
+#              abstract content.
+#   NOT observed: licence text (the fetched arXiv pages did not expose it), access status,
+#              the latest version number, PDF bytes/SHA-256.
+# Therefore `license` stays UNVERIFIED everywhere and `license_verified_on` stays null.
+# Split design: see docs/split_policy.md. `planned_split` is a PROPOSAL; `split` is set only at inclusion.
+# `status` may only become `included` after the human fills the fields listed in
+# `verification_todo` (the schema refuses `included` otherwise).
+# PDFs are never committed to git; publish identifiers and hashes only.
+manifest_version: "0.3"
+corpus_name: peft-literature
+description: "Candidate papers on parameter-efficient fine-tuning (LoRA, QLoRA, adapters, soft prompts) plus two papers that qualify LoRA's claims. Narrow by design; not representative of all PEFT research."
+redistribution_policy: "Do not redistribute PDFs or extracted text; publish identifiers, hashes and annotations only unless a verified licence permits more."
+papers:
+  - paper_id: arxiv-2106.09685
+    title: "LoRA: Low-Rank Adaptation of Large Language Models"
+    authors: ["Edward J. Hu", "Yelong Shen", "Phillip Wallis", "Zeyuan Allen-Zhu", "Yuanzhi Li", "Shean Wang", "Lu Wang", "Weizhu Chen"]
+    year: 2021
+    source: arxiv
+    source_id: "2106.09685"
+    doi: "10.48550/arXiv.2106.09685"
+    venue: "ICLR 2022 (per mlanthology.org, a secondary index)"
+    version: "v2"
+    source_url: "https://arxiv.org/abs/2106.09685"
+    pdf_url: "https://arxiv.org/pdf/2106.09685"
+    license: UNVERIFIED
+    license_notes: "version v2 observed during Phase 3 (exact date not recorded): the unversioned PDF carries the stamp 'arXiv:2106.09685v2 [cs.CL] 16 Oct 2021' and says 'Version 2'. Re-check at download."
+    local_path: "arxiv-2106.09685.pdf"
+    status: candidate
+    cluster_id: lora-family
+    planned_split: test
+    evidence_role: claim
+    topic_tags: [lora, low-rank, numerical-claims]
+    relevance_note: "Original LoRA paper. Abstract makes numerical claims (10,000x fewer trainable parameters, 3x GPU memory vs GPT-3 175B fine-tuning) and a comparative claim (on-par or better than fine-tuning) that later papers qualify."
+    recommendation: recommend_include
+    recommendation_reason: "Core method paper; source of claims that the two 2024 papers below test or qualify."
+    verification_todo: &todo
+      - "Open the arXiv abs page; record the licence shown there in `license` and its URL in `license_source`/`license_url`."
+      - "Record the latest version from 'Submission history' in `version` and pin `pdf_url` to that version."
+      - "Download via `python -m app.cli download --paper-id <id>`, then run `python -m app.cli hashes` and copy the sha256."
+      - "Set `access_status`, `license_verified_on`, `access_checked_on`; assign `split` for the whole cluster; then set status to included."
+  - paper_id: arxiv-2305.14314
+    title: "QLoRA: Efficient Finetuning of Quantized LLMs"
+    authors: ["Tim Dettmers", "Artidoro Pagnoni", "Ari Holtzman", "Luke Zettlemoyer"]
+    year: 2023
+    source: arxiv
+    source_id: "2305.14314"
+    doi: "10.48550/arXiv.2305.14314"
+    venue: "NeurIPS 2023 (proceedings.neurips.cc lists it)"
+    version: null
+    source_url: "https://doi.org/10.48550/arXiv.2305.14314"
+    pdf_url: "https://arxiv.org/pdf/2305.14314"
+    license: UNVERIFIED
+    local_path: "arxiv-2305.14314.pdf"
+    status: candidate
+    cluster_id: lora-family
+    planned_split: test
+    evidence_role: claim
+    topic_tags: [qlora, quantization, numerical-claims]
+    relevance_note: "Quantised LoRA. Abstract has numerical claims (65B model on a single 48GB GPU; 99.3% of ChatGPT on Vicuna benchmark) and a claim of preserving 16-bit finetuning performance."
+    recommendation: recommend_include
+    recommendation_reason: "Covers QLoRA explicitly requested in scope; rich numerical claims for verification tests."
+    verification_todo: *todo
+  - paper_id: arxiv-1902.00751
+    title: "Parameter-Efficient Transfer Learning for NLP"
+    authors: ["Neil Houlsby", "Andrei Giurgiu", "Stanisław Jastrzębski", "Bruna Morrone", "Quentin de Laroussilhe", "Andrea Gesmundo", "Mona Attariyan", "Sylvain Gelly"]
+    year: 2019
+    source: arxiv
+    source_id: "1902.00751"
+    doi: null
+    venue: "ICML 2019 (PMLR 97, per the paper PDF text)"
+    version: null
+    source_url: "https://research.google/pubs/parameter-efficient-transfer-learning-for-nlp/"
+    pdf_url: "https://arxiv.org/pdf/1902.00751"
+    license: UNVERIFIED
+    license_notes: "arXiv DOI not observed for this paper, so doi is null."
+    local_path: "arxiv-1902.00751.pdf"
+    status: candidate
+    cluster_id: adapters
+    planned_split: train
+    evidence_role: none
+    topic_tags: [adapters, bert, version-discrepancy]
+    relevance_note: "Original adapter-module paper. Observed discrepancy: arXiv-derived pages state 'within 0.4%' of full fine-tuning on GLUE, while the Google Research publication page states 'within 0.8%'. A concrete example of version/temporal mismatch."
+    recommendation: recommend_include
+    recommendation_reason: "Covers adapters; the 0.4% vs 0.8% discrepancy is a real test case for version pinning and numerical verification."
+    verification_todo:
+      - "Decide which text is the corpus document (arXiv version vs ICML/PMLR proceedings) and record it; do NOT include both (duplicate)."
+      - "Check the abstract number (0.4% vs 0.8%) in the file you actually download."
+      - "Then complete the common steps: licence + source, version, download, sha256, access_status, dates, split."
+  - paper_id: arxiv-2101.00190
+    title: "Prefix-Tuning: Optimizing Continuous Prompts for Generation"
+    authors: ["Xiang Lisa Li", "Percy Liang"]
+    year: 2021
+    source: arxiv
+    source_id: "2101.00190"
+    doi: "10.48550/arXiv.2101.00190"
+    venue: "ACL-IJCNLP 2021 (ACL Anthology ID 2021.acl-long.353)"
+    version: null
+    source_url: "https://arxiv.org/abs/2101.00190"
+    pdf_url: "https://arxiv.org/pdf/2101.00190"
+    license: UNVERIFIED
+    license_notes: "The ACL Anthology page for this paper is also a place to check the licence."
+    local_path: "arxiv-2101.00190.pdf"
+    status: candidate
+    cluster_id: soft-prompts
+    planned_split: dev
+    evidence_role: claim
+    topic_tags: [prefix-tuning, soft-prompts, numerical-claims]
+    relevance_note: "Parameter-efficient method for generation. Abstract: learns 0.1% of parameters, comparable in full-data setting, outperforms fine-tuning in low-data settings."
+    recommendation: recommend_include
+    recommendation_reason: "Representative non-LoRA PEFT method; comparative and numerical claims."
+    verification_todo: *todo
+  - paper_id: arxiv-2104.08691
+    title: "The Power of Scale for Parameter-Efficient Prompt Tuning"
+    authors: ["Brian Lester", "Rami Al-Rfou", "Noah Constant"]
+    year: 2021
+    source: arxiv
+    source_id: "2104.08691"
+    doi: "10.48550/arXiv.2104.08691"
+    venue: "EMNLP 2021 (ACL Anthology ID 2021.emnlp-main.243)"
+    version: null
+    source_url: "https://arxiv.org/abs/2104.08691"
+    pdf_url: "https://arxiv.org/pdf/2104.08691"
+    license: UNVERIFIED
+    license_notes: "The ACL Anthology page for this paper is also a place to check the licence. v2 was observed on arXiv."
+    local_path: "arxiv-2104.08691.pdf"
+    status: candidate
+    cluster_id: soft-prompts
+    planned_split: dev
+    evidence_role: claim
+    topic_tags: [prompt-tuning, scale, comparative-claims]
+    relevance_note: "Prompt tuning; claims it matches full model tuning as models grow (scale-dependent claim) and positions itself relative to prefix-tuning."
+    recommendation: recommend_include
+    recommendation_reason: "Scale-dependent comparative claim; cross-references prefix-tuning (same cluster)."
+    verification_todo: *todo
+  - paper_id: arxiv-2405.09673
+    title: "LoRA Learns Less and Forgets Less"
+    authors: ["Dan Biderman", "Jacob Portes", "Jose Javier Gonzalez Ortiz", "Mansheej Paul", "Philip Greengard", "Connor Jennings", "Daniel King", "Sam Havens", "Vitaliy Chiley", "Jonathan Frankle", "Cody Blakeney", "John P. Cunningham"]
+    year: 2024
+    source: arxiv
+    source_id: "2405.09673"
+    doi: "10.48550/arXiv.2405.09673"
+    venue: "TMLR 2024 (per mlanthology.org); an ICLR 2025 poster page also exists"
+    version: null
+    source_url: "https://doi.org/10.48550/arXiv.2405.09673"
+    pdf_url: null
+    license: UNVERIFIED
+    license_notes: "A secondary site (HackerNoon) says the arXiv version is CC BY 4.0. NOT verified on arXiv; treat as a lead only. v2 was observed on arXiv."
+    local_path: "arxiv-2405.09673.pdf"
+    status: candidate
+    cluster_id: lora-family
+    planned_split: test
+    evidence_role: qualifies
+    topic_tags: [lora, full-finetuning, contradiction, forgetting]
+    relevance_note: "Abstract: in standard low-rank settings LoRA substantially underperforms full finetuning, yet forgets less. Qualifies/contradicts the original LoRA 'on-par or better' claim; context-dependent (code/math, rank, hyperparameters)."
+    recommendation: recommend_include
+    recommendation_reason: "Primary source of contradictory/qualifying evidence relative to the LoRA paper."
+    verification_todo:
+      - "Find the PDF link on the arXiv abs page and record it in `pdf_url` (not observed by the assistant)."
+      - "Then complete the common steps: licence + source, version, download, sha256, access_status, dates, split."
+  - paper_id: arxiv-2410.21228
+    title: "LoRA vs Full Fine-tuning: An Illusion of Equivalence"
+    authors: ["Reece Shuttleworth", "Jacob Andreas", "Antonio Torralba", "Pratyusha Sharma"]
+    year: 2024
+    source: arxiv
+    source_id: "2410.21228"
+    doi: "10.48550/arXiv.2410.21228"
+    venue: "NeurIPS 2025 (per nips.cc and a Microsoft Research page); year from the 2410 arXiv id (Oct 2024)"
+    version: null
+    source_url: "https://doi.org/10.48550/arXiv.2410.21228"
+    pdf_url: null
+    license: UNVERIFIED
+    license_notes: "v1, v2 and v3 exist and their abstracts differ in emphasis; pin the exact version you annotate."
+    local_path: "arxiv-2410.21228.pdf"
+    status: candidate
+    cluster_id: lora-family
+    planned_split: test
+    evidence_role: qualifies
+    topic_tags: [lora, full-finetuning, contradiction, version-discrepancy]
+    relevance_note: "Finds LoRA and full fine-tuning can match on the target task but differ structurally ('intruder dimensions'), with more forgetting in some cases. Qualifies the equivalence reading of the LoRA paper."
+    recommendation: recommend_include
+    recommendation_reason: "Second qualifying source; multiple arXiv versions make version pinning matter."
+    verification_todo:
+      - "Find the PDF link on the arXiv abs page and record it in `pdf_url` (not observed by the assistant)."
+      - "Choose one version (v1/v2/v3), record it, and keep it fixed for all annotation."
+      - "Then complete the common steps: licence + source, download, sha256, access_status, dates, split."
+  - paper_id: arxiv-2110.07602
+    title: "P-Tuning v2: Prompt Tuning Can Be Comparable to Fine-tuning Universally Across Scales and Tasks"
+    authors: ["Xiao Liu"]
+    year: 2021
+    source: arxiv
+    source_id: "2110.07602"
+    doi: "10.48550/arXiv.2110.07602"
+    venue: "ACL 2022 (per the authors' GitHub README, a secondary source)"
+    version: "v3"
+    source_url: "https://arxiv.org/abs/2110.07602"
+    pdf_url: "https://arxiv.org/pdf/2110.07602"
+    license: UNVERIFIED
+    license_notes: "AUTHOR LIST INCOMPLETE: arXiv shows 'Xiao Liu and 6 other authors' (v3); the other names were not observed. Submission history observed: v1 14 Oct 2021, v2 18 Oct 2021, v3 20 Mar 2022 (latest in that snapshot; re-check). The v2 and v3 abstracts differ (v2: 'a version of prefix-tuning'; v3: 'an implementation of Deep Prompt Tuning')."
+    local_path: "arxiv-2110.07602.pdf"
+    status: candidate
+    cluster_id: soft-prompts
+    planned_split: dev
+    evidence_role: qualifies
+    topic_tags: [prompt-tuning, scale, contradiction, version-discrepancy]
+    relevance_note: "Qualifies the prompt-tuning scale claim: prior prompt tuning performs poorly at normal model sizes and on hard sequence-labelling tasks; deep prompt tuning matches fine-tuning across scales with 0.1%-3% tuned parameters. Agrees with Lester et al. that prompt tuning becomes competitive near 10B."
+    recommendation: recommend_include
+    recommendation_reason: "Independent contradiction/qualification cluster (soft prompts) so that dev and test each contain one."
+    verification_todo: *todo

@@ -1,0 +1,37 @@
+# Candidate papers (PEFT / LoRA corpus)
+
+Status: **candidates only. Nothing is `included`.** Machine-readable version: `data/corpus_manifest.yaml`.
+
+Provenance of what is recorded: gathered during the Phase 3 sessions (early October 2026; exact dates were not recorded, so re-verify) from web search results (arXiv abs/PDF pages, ACL Anthology, NeurIPS/ICLR pages, a Google Research page). The fetched arXiv pages exposed **title, authors, arXiv-issued DOI and abstract, but not the licence, the latest version number, or the PDF bytes**. So every `license` is `UNVERIFIED`, `version` is empty, `sha256` is empty, and the PDFs have not been downloaded. Venue/year fields come from the named secondary or primary pages and should be re-checked. The corpus is deliberately narrow and not representative of PEFT research as a whole.
+
+## A-D. Candidates, relevance, source, licence/access status
+
+| # | paper_id | Paper (authors, year) | Why relevant | Original source observed | Licence / access status |
+|---|---|---|---|---|---|
+| 1 | arxiv-2106.09685 | LoRA: Low-Rank Adaptation of Large Language Models (Hu, Shen, Wallis, Allen-Zhu, Li, Wang, Wang, Chen; 2021) | Core LoRA method. Numerical claims (10,000x fewer trainable params, 3x GPU memory vs GPT-3 175B) and a comparative claim ("on-par or better than fine-tuning") | arXiv 2106.09685 (v1 observed); DOI 10.48550/arXiv.2106.09685; ICLR 2022 per mlanthology.org (secondary) | UNVERIFIED; not downloaded. **Version v2 verified** (early October 2026) from the arXiv stamp on the unversioned PDF: `arXiv:2106.09685v2 [cs.CL] 16 Oct 2021` |
+| 2 | arxiv-2305.14314 | QLoRA: Efficient Finetuning of Quantized LLMs (Dettmers, Pagnoni, Holtzman, Zettlemoyer; 2023) | QLoRA in scope; numerical claims (65B on one 48GB GPU, 99.3% of ChatGPT on Vicuna benchmark); claim of preserving 16-bit finetuning performance | arXiv 2305.14314 (v1 observed); DOI 10.48550/arXiv.2305.14314; NeurIPS 2023 proceedings page | UNVERIFIED; not downloaded |
+| 3 | arxiv-1902.00751 | Parameter-Efficient Transfer Learning for NLP (Houlsby et al.; 2019) | Adapters. **Observed discrepancy:** arXiv-derived pages say "within 0.4%" of full fine-tuning on GLUE; the Google Research publication page says "within 0.8%". Real test case for version pinning | arXiv 1902.00751; ICML 2019 (PMLR 97) per the PDF text; no arXiv DOI observed | UNVERIFIED; not downloaded; decide arXiv vs proceedings version |
+| 4 | arxiv-2101.00190 | Prefix-Tuning: Optimizing Continuous Prompts for Generation (Li, Liang; 2021) | Non-LoRA PEFT; "0.1% of parameters", comparable in full-data, better in low-data | arXiv 2101.00190 (v1 observed); DOI 10.48550/arXiv.2101.00190; ACL-IJCNLP 2021, Anthology ID 2021.acl-long.353 | UNVERIFIED; not downloaded |
+| 5 | arxiv-2104.08691 | The Power of Scale for Parameter-Efficient Prompt Tuning (Lester, Al-Rfou, Constant; 2021) | Soft prompts; scale-dependent claim (matches model tuning as models grow); compares itself to prefix-tuning | arXiv 2104.08691 (v2 observed); DOI 10.48550/arXiv.2104.08691; EMNLP 2021, Anthology ID 2021.emnlp-main.243 | UNVERIFIED; not downloaded |
+| 6 | arxiv-2405.09673 | LoRA Learns Less and Forgets Less (Biderman et al., 12 authors; 2024) | **Qualifies/contradicts** the LoRA claim: in standard low-rank settings LoRA substantially underperforms full finetuning on code/math, yet forgets less; full finetuning learns perturbations of rank 10-100x higher | arXiv 2405.09673 (v2 observed); DOI 10.48550/arXiv.2405.09673; TMLR 2024 (mlanthology.org); ICLR 2025 poster page also exists | UNVERIFIED. A secondary site says CC BY 4.0; **lead only**. PDF URL not observed |
+| 8 | arxiv-2110.07602 | P-Tuning v2: Prompt Tuning Can Be Comparable to Fine-tuning Universally Across Scales and Tasks (Xiao Liu +6 others; 2021) | **Qualifies** the prompt-tuning scale claim of paper 5 (poor at normal model sizes and on hard sequence-labelling tasks; deep prompt tuning matches fine-tuning with 0.1%-3% tuned parameters). Gives the second, independent contradiction cluster | arXiv 2110.07602; submission history observed: v1 14 Oct 2021, v2 18 Oct 2021, v3 20 Mar 2022 (latest in that snapshot); DOI 10.48550/arXiv.2110.07602; ACL 2022 per the authors' README (secondary). **Author list incomplete** (only 'Xiao Liu' observed) | UNVERIFIED; not downloaded; v2/v3 abstracts differ |
+| 7 | arxiv-2410.21228 | LoRA vs Full Fine-tuning: An Illusion of Equivalence (Shuttleworth, Andreas, Torralba, Sharma; 2024) | **Qualifies** equivalence: similar target-task accuracy but structurally different updates ("intruder dimensions") and different forgetting. v1/v2/v3 abstracts differ in emphasis | arXiv 2410.21228 (v1, v2, v3 observed); DOI 10.48550/arXiv.2410.21228; NeurIPS 2025 (nips.cc, Microsoft Research page) | UNVERIFIED; not downloaded; pin one version. PDF URL not observed |
+
+Covered phenomena: numerical claims (1, 2, 3, 4), comparative claims (1, 4, 5), a qualifying/contradicting pair relative to paper 1 (6, 7), version/temporal mismatch (3, 7), scale-dependent claims (5), and adapters / soft prompts / LoRA / quantised LoRA as method families.
+
+## Unverified leads (recalled from memory; NOT searched, NOT in the manifest, do not cite until verified)
+AdaLoRA; DoRA; Towards a Unified View of Parameter-Efficient Transfer Learning (He et al.); the (IA)^3 / T-Few paper; BitFit; AdapterFusion; a PEFT survey (e.g. Han et al.); the intrinsic-dimensionality paper that LoRA cites (Aghajanyan et al.). Verify each (title, authors, id, venue, licence) with the same procedure before adding.
+
+## E. What you must verify manually (per paper, before `included`)
+1. Open the arXiv abstract page; record the **licence shown there** in `license`, the page URL in `license_source`, and the date in `license_verified_on`. For ACL/NeurIPS papers also check the venue page.
+2. Record the **latest version** from "Submission history" in `version`; pin `pdf_url` to that version. Paper 3: choose arXiv or proceedings text and check the 0.4% vs 0.8% sentence in the file you use. Papers 6, 7: record the PDF link.
+3. Download with `python -m app.cli download --paper-id <id>` (explicit ids only, 3 s delay), then `python -m app.cli hashes` and copy `sha256`.
+4. Set `access_status: freely_accessible`, `access_checked_on`; confirm DOI/venue/year; check no duplicate version is also listed.
+5. Assign `cluster_id` and `split` (whole cluster to one split), then set `status: included`. The schema refuses `included` otherwise; `python -m app.cli validate-manifest --check-files` re-checks hashes.
+6. Decide the repository licence in light of `docs/LICENSING.md`.
+
+## F. Recommended minimum corpus for development
+**8 papers (the table above), optionally up to 10** by verifying 3 leads. Purpose: exercise ingestion, chunking, retrieval, citation checks and one contradiction cluster. This is an engineering judgment, not an empirical result.
+
+## G. Recommended corpus for the eventual evaluation
+**About 25-40 papers** supporting **100-200 annotated questions**, with at least two independent contradiction/qualification clusters so that dev and test each contain one. Basis: single-annotator effort (each question needs gold passages and claim labels) versus enough distractors for retrieval to be non-trivial. This is a planning heuristic: time ten annotations first and revise. **Contradiction clusters:** resolved in `docs/split_policy.md` (lora-family -> test, soft-prompts -> dev); still only one cluster per split, so contradiction results will be case-study level.

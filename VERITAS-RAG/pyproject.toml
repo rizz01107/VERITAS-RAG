@@ -1,0 +1,60 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "veritas-rag"
+version = "0.1.0"
+description = "Evidence-aware scientific RAG with claim-level hallucination and citation verification"
+readme = "README.md"
+requires-python = ">=3.10"
+dependencies = [
+  "pydantic>=2.7,<3",
+  "PyYAML>=6.0,<7",
+  "PyMuPDF>=1.28.2,<1.29",  # AGPL-3.0 or commercial: docs/LICENSING.md; 1.26.7 changes block order
+]
+
+[project.optional-dependencies]
+dev = [
+  "pytest>=8,<9",
+  "ruff>=0.6",
+  "mypy>=1.10",
+  "types-PyYAML",
+]
+
+[project.scripts]
+veritas = "app.cli:main"
+
+[tool.setuptools.packages.find]
+include = ["app*"]
+
+[tool.ruff]
+line-length = 100
+target-version = "py310"
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "UP", "B", "S", "SIM", "T20", "N"]
+
+[tool.ruff.lint.per-file-ignores]
+"tests/**" = ["S101", "S105", "S106", "S311", "S603"]
+
+[tool.mypy]
+python_version = "3.10"
+strict = true
+plugins = ["pydantic.mypy"]
+files = ["app", "tests"]
+
+[[tool.mypy.overrides]]
+module = ["app.ingestion.pymupdf_backend", "tests.pdfgen", "tests.integration.test_ingestion_pipeline", "tests.integration.test_ingestion_audit", "tests.integration.test_real_tex_paper"]
+disallow_untyped_calls = false  # PyMuPDF is only partially typed
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "--strict-markers -ra"
+markers = [
+  "unit: fast isolated tests",
+  "integration: multi-module tests",
+  "edge: failure and edge cases",
+  "regression: guards against metric regressions",
+  "adversarial: prompt-injection and malicious-input tests",
+]

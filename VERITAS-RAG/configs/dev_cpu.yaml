@@ -1,0 +1,14 @@
+# Small, cheap, CPU-friendly development profile.
+extends: default.yaml
+run:
+  mode: dev
+  max_eval_items: 10
+embedding:
+  device: cpu
+  batch_size: 16
+retrieval:
+  candidate_k: 20
+reranking:
+  batch_size: 8
+logging:
+  level: DEBUG

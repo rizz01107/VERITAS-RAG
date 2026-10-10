@@ -1,0 +1,90 @@
+# Baseline configuration. Every value here can be overridden by a child config or by
+# VERITAS_<SECTION>__<KEY> environment variables (e.g. VERITAS_RETRIEVAL__TOP_K=10).
+# PROVISIONAL values are calibrated on the dev split in later phases, never on test.
+run:
+  mode: dev
+  seed: 42
+  max_eval_items: null
+paths:
+  raw_dir: data/raw
+  processed_dir: data/processed
+  eval_dir: data/evaluation
+  index_dir: data/processed/index
+  manifest_path: data/corpus_manifest.yaml
+  experiments_dir: experiments/registry
+  logs_dir: logs
+  models_config: configs/models.yaml
+  models_local_config: configs/models.local.yaml
+ingestion:
+  allowed_extensions: [".pdf"]   # plain-text ingestion: IMPLEMENTATION PENDING
+  max_file_size_mb: 25
+  pdf_parser: pymupdf
+  ocr_enabled: false
+  ocr_languages: eng
+  min_chars_per_page: 50
+  max_pages: 400
+  max_chars_per_page_warn: 100000
+  detect_tables: true
+  table_detection_max_lines: 400   # find_tables is superlinear; skip on huge pages
+  detect_unruled_tables: true      # fallback for booktabs-style tables (rules only, no vertical lines)
+  table_max_page_fraction: 0.5     # reject fallback tables taller than this fraction of the page
+  detect_columns: true
+  strip_running_headers: true
+  exclude_references_from_chunks: true
+  heading_size_ratio: 1.12
+  boilerplate_min_pages: 3
+  boilerplate_page_fraction: 0.5
+  margin_band_fraction: 0.08
+  column_gutter_fraction: 0.02
+chunking:
+  strategy: section
+  chunk_size: 256      # words (whitespace-delimited), tokenizer independent
+  chunk_overlap: 32
+embedding:
+  model_ref: embedder_default
+  batch_size: 32
+  normalize: true
+  device: auto
+vector_store:
+  backend: chroma
+  collection_name: veritas_chunks
+  distance: cosine
+retrieval:
+  mode: hybrid
+  top_k: 5             # final context size, identical for all compared systems
+  candidate_k: 30
+  fusion: rrf
+  rrf_k: 60
+  dense_weight: 0.5
+  similarity_threshold: null
+reranking:
+  enabled: true
+  model_ref: reranker_default
+  batch_size: 16
+generation:
+  model_ref: generator_default
+  temperature: 0.0
+  max_tokens: 1024
+  timeout_s: 60
+  max_retries: 3
+claims:
+  max_claims_per_answer: 30
+  min_claim_chars: 15
+verification:
+  nli_model_ref: nli_default
+  support_threshold: 0.5        # PROVISIONAL
+  contradiction_threshold: 0.5  # PROVISIONAL
+  evidence_top_k: 5
+  max_regeneration_rounds: 1
+  independent_second_pass: true
+ecs:
+  partial_credit: 0.5           # convention; sensitivity-analysed, not tuned for results
+security:
+  max_query_chars: 2000
+logging:
+  level: INFO
+  json_format: true
+  log_to_file: false
+budget:                         # dev cost guard: conservative defaults, adjust as needed
+  max_llm_calls: 100
+  max_total_tokens: 200000

@@ -1,0 +1,12 @@
+# Full evaluation profile. `run.mode: full` makes readiness checks strict:
+# all models pinned, manifest has included papers. Budget is unlimited ONLY here;
+# run it after tests pass and dev runs are stable.
+extends: default.yaml
+run:
+  mode: full
+  max_eval_items: null
+budget:
+  max_llm_calls: null
+  max_total_tokens: null
+logging:
+  log_to_file: true
